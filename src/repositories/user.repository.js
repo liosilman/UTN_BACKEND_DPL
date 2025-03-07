@@ -1,4 +1,5 @@
-import User, { USER_PROPS } from "../models/User.model.js";
+import User, { USER_PROPS } from "../Models/User.model.js";
+
 import { ServerError } from "../utils/errors.utils.js";
 
 class UserRepository {
