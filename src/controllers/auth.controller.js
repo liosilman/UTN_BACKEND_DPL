@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken'
 
 import { sendMail } from "../utils/mailer.utils.js";
+import { AUTHORIZATION_TOKEN_PROPS } from "../utils/constants/token.constants.js";
 import { ENVIROMENT } from "../config/enviroment.config.js";
 
 export const registerController = async (req, res) => {
@@ -102,6 +103,7 @@ export const verifyEmailController = async (req, res) => {
     }
 }
 
+
 export const loginController = async (req, res) => {
     try{    
         
@@ -119,7 +121,7 @@ export const loginController = async (req, res) => {
         }
         const authorization_token = jwt.sign(
             {
-                _id: user_found._id,
+                [AUTHORIZATION_TOKEN_PROPS.ID]: user_found._id,
                 username: user_found.username,
                 email: user_found.email
             },

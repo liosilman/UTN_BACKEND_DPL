@@ -1,11 +1,14 @@
-import {ENVIROMENT} from "./config/enviroment.config.js";
+import { ENVIROMENT } from "./config/enviroment.config.js";
 import express from 'express'
-import authRouter from "./routes/auth.routes.js";
-import mongoose from "./config/mongoDB.config.js";
+import mongoose from "./config/mongodb.config.js";
 import { sendMail } from "./utils/mailer.utils.js";
 import cors from 'cors'
-import { verifyLuckyMiddleware } from "./middlewares/verifyLuckyMiddleware.js";
+
 import { authMiddleware } from "./middlewares/authMiddleware.js";
+
+import channelRouter from "./routes/channel.router.js";
+import authRouter from "./routes/auth.routes.js";
+import workspaceRouter from "./routes/workspaces.routes.js";
 
 const app = express()
 
@@ -46,6 +49,9 @@ Probar hacer el registro con postman
 */
 
 app.use('/api/auth', authRouter)
+app.use('/api/workspaces', workspaceRouter)
+app.use('/api/channels', channelRouter)
+
 app.get('/api/test/comprar', authMiddleware, (req, res) =>{
     console.log(req.user)
     res.json({
