@@ -9,12 +9,18 @@ export const ENVIROMENT = {
   GMAIL_USERNAME: process.env.GMAIL_USERNAME,
   GMAIL_PASSWORD: process.env.GMAIL_PASSWORD,
   URL_BACKEND: process.env.URL_BACKEND,
-  URL_FRONTEND: process.env.URL_FRONTEND
+  URL_FRONTEND: process.env.URL_FRONTEND,
+  MYSQL:{
+    HOST: process.env.MYSQL_HOST,
+    USER: process.env.MYSQL_USER,
+    PASSWORD: process.env.MYSQL_PASSWORD,
+    DB_NAME: process.env.MYSQL_DB_NAME
+  }
 };
 
 for(let key in ENVIROMENT){
     if(ENVIROMENT[key] === undefined){
-        console.error('OJO que la variable ' + key  +' esta indefinida')
+        console.error('La variable ' + key  +' esta indefinida')
     }
 }
 

@@ -1,4 +1,5 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
+
 const channel_schema = new mongoose.Schema(
     {
         name: {type: String, required: true},
@@ -7,5 +8,7 @@ const channel_schema = new mongoose.Schema(
         created_by: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
     }
 )
+
 const Channel = mongoose.model('Channel', channel_schema)
-export default Channel 
+
+export default Channel

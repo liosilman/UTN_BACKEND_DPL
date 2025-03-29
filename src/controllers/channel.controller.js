@@ -1,115 +1,178 @@
-import channelRepository from "../repositories/channel.repository.js"
-import messageRepository from "../repositories/message.repository.js"
-import { AUTHORIZATION_TOKEN_PROPS } from "../utils/constants/token.constants.js"
+import mongoose from 'mongoose';
+import { ServerError } from "../utils/errors.utils.js";
+import channelRepository from "../repositories/channel.repository.js";
+import messageRepository from "../repositories/message.repository.js";
+import { AUTHORIZATION_TOKEN_PROPS } from "../utils/constants/token.constants.js";
+import Message  from "../models/Message.model.js";
 
+// Controlador para crear canal
+export const createChannelController = async (req, res) => {
+    try {
+        const { name } = req.body;
+        const { workspace_id } = req.params;
+        const user_id = req.user[AUTHORIZATION_TOKEN_PROPS.ID];
 
+        if (!workspace_id) throw new ServerError('Workspace ID es requerido', 400);
+        if (!mongoose.Types.ObjectId.isValid(workspace_id)) throw new ServerError('Workspace ID inválido', 400);
+        if (!name?.trim()) throw new ServerError('Nombre de canal requerido', 400);
 
-export const createChannelController =async (req, res) =>{
-    try{
-        //Channel name
-        const {name} = req.body
+        const channel = await channelRepository.createChannel({ 
+            name: name.trim(), 
+            workspace_id, 
+            user_id 
+        });
 
-        //id del usuario que quiere crear el canal
-        const user_id = req.user[AUTHORIZATION_TOKEN_PROPS.ID]
+        res.status(201).json({ 
+            ok: true, 
+            message: 'Canal creado exitosamente', 
+            data: channel 
+        });
 
-        //Workspace al que quiero añadir este canal
-        const {workspace_id} = req.params
-
-        const new_channel = await channelRepository.createChannel({name, user_id, workspace_id})
-        res.json({
-            ok: true,
-            status: 200,
-            message: "Channel created",
-            data: {
-                new_channel
-            }
-        })
-    }
-    catch(error){
-        console.log("error al crear canal", error);
-
-        if (error.status) {
-            return res.status(400).send({
-                ok: false,
-                status: error.status,
-                message: error.message
-            });
-        }
-
-        res.status(500).send({
-            status: 500,
-            ok: false,
-            message: "internal server error"
+    } catch (error) {
+        const status = error.status || 500;
+        res.status(status).json({ 
+            ok: false, 
+            status, 
+            message: error.message 
         });
     }
-}
+};
 
-export const sendMessageToChannelController = async (req, res) =>{
-    try{
-        const {channel_id} = req.params
-        const user_id = req.user[AUTHORIZATION_TOKEN_PROPS.ID]
-        const {content} = req.body
- 
+// Controlador para obtener canales de un workspace
+export const getWorkspaceChannelsController = async (req, res) => {
+    try {
+        const { workspace_id } = req.params;
+        const user_id = req.user[AUTHORIZATION_TOKEN_PROPS.ID];
 
-        const new_message = await messageRepository.create({sender_id: user_id, channel_id, content})
-        res.json({
-            ok: true,
-            message: 'Message created',
-            status: 201,
-            data: {
-                new_message
-            }
-        })
-    }
-    catch(error){
-        console.log("error al enviar mensaje al canal", error);
+        if (!workspace_id) throw new ServerError('Workspace ID es requerido', 400);
 
-        if (error.status) {
-            return res.status(400).send({
-                ok: false,
-                status: error.status,
-                message: error.message
-            });
-        }
+        const channels = await channelRepository.findChannelsByWorkspace({ 
+            workspace_id, 
+            user_id 
+        });
 
-        res.status(500).send({
-            status: 500,
-            ok: false,
-            message: "internal server error"
+        res.status(200).json({ 
+            ok: true, 
+            data: channels 
+        });
+
+    } catch (error) {
+        const status = error.status || 500;
+        res.status(status).json({ 
+            ok: false, 
+            status, 
+            message: error.message 
         });
     }
-}
+};
 
-export const getMessagesListFromChannelController = async (req, res) =>{
-    try{
-        const user_id = req.user[AUTHORIZATION_TOKEN_PROPS.ID]
-        const {channel_id} = req.params
-        const messages = await messageRepository.findMessagesFromChannel({channel_id, user_id})
-        res.json({
-            ok: true,
-            message: 'Messages found',
-            status: 200,
-            data: {
-                messages
-            }
-        })
+// Controlador para obtener un canal específico
+export const getChannelByIdController = async (req, res) => {
+    try {
+        const { workspace_id, channel_id } = req.params;
+        console.log('workspace_id:', workspace_id);  // Verificar que el workspace_id es correcto
+        console.log('channel_id:', channel_id);      // Verificar que el channel_id es correcto
 
-    }
-    catch(error){
-        console.log("error al obtener la lista de mensajes", error);
-
-        if (error.status) {
-            return res.status(400).send({
-                ok: false,
-                status: error.status,
-                message: error.message
-            });
+        if (!mongoose.Types.ObjectId.isValid(workspace_id)) {
+            throw new ServerError('Workspace ID inválido', 400);  // Validación de workspace_id
         }
 
-        res.status(500).send({
-            status: 500,
-            ok: false,
-            message: "internal server error"
+        if (!mongoose.Types.ObjectId.isValid(channel_id)) {
+            throw new ServerError('Channel ID inválido', 400);  // Validación de channel_id
+        }
+
+        const user_id = req.user[AUTHORIZATION_TOKEN_PROPS.ID];
+
+        const channel = await channelRepository.findChannelById({ 
+            workspace_id, 
+            channel_id, 
+            user_id 
+        });
+
+        if (!channel) throw new ServerError('Canal no encontrado', 404);
+
+        res.status(200).json({ 
+            ok: true, 
+            data: channel 
+        });
+
+    } catch (error) {
+        const status = error.status || 500;
+        res.status(status).json({ 
+            ok: false, 
+            status, 
+            message: error.message 
         });
     }
-} 
+};
+
+
+
+// Controlador para enviar mensaje a un canal
+export const sendMessageToChannelController = async (req, res) => {
+    try {
+      const { workspace_id, channel_id, user_id } = req.params;
+      const { content } = req.body;
+  
+      // Validación mínima del contenido
+      if (!content?.trim()) {
+        throw new ServerError("El contenido del mensaje es requerido", 400);
+      }
+  
+      // Creación directa del mensaje (sin validaciones adicionales)
+      const newMessage = await Message.create({
+        channel_ref: channel_id,
+        sender: user_id,
+        workspace_ref: workspace_id,
+        content: content.trim(),
+        created_at: new Date()
+      });
+  
+      res.status(201).json({
+        success: true,
+        data: newMessage
+      });
+  
+    } catch (error) {
+      console.error('Error en controlador:', {
+        params: req.params,
+        body: req.body,
+        error: error.message
+      });
+      
+      const status = error.status || 500;
+      res.status(status).json({
+        success: false,
+        error: error.message
+      });
+    }
+  };
+  export const getMessagesListFromChannelController = async (req, res) => {
+    try {
+        const { channel_id, workspace_id } = req.params;
+        const user_id = req.user[AUTHORIZATION_TOKEN_PROPS.ID];
+
+        // Versión simple sin paginación
+        const messages = await Message.find({ 
+            channel_ref: channel_id,
+            workspace_ref: workspace_id 
+        })
+        .populate('sender', 'username avatar')
+        .sort({ created_at: -1 }) // Más recientes primero
+        .lean();
+
+        res.status(200).json({
+            ok: true,
+            data: {
+                messages,
+                count: messages.length
+            }
+        });
+
+    } catch (error) {
+        res.status(error.status || 500).json({ 
+            ok: false, 
+            message: error.message 
+        });
+    }
+};

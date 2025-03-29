@@ -1,11 +1,16 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
+
 const workspace_schema = new mongoose.Schema(
     {
-        name: {type: String, required: true},
-        owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-        members: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
-        created_at: {type: Date, default: Date.now}
-    }
-)
-const Workspace = mongoose.model('Workspace', workspace_schema)
-export default Workspace
+        name: { type: String, required: true },
+        owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+        channels: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Channel' }], // Campo añadido
+        created_at: { type: Date, default: Date.now }
+    },
+    
+);
+
+const Workspace = mongoose.model('Workspace', workspace_schema);
+
+export default Workspace;

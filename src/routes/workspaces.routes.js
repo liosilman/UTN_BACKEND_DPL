@@ -1,12 +1,28 @@
-import { Router } from "express"
-import { authMiddleware } from "../middlewares/authMiddleware.js"
-import { createWorkspaceController, invteUserToWorkspaceController } from "../controllers/workspace.controller.js"
+import { Router } from "express";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
+import { 
+  createWorkspaceController,
+  inviteUserToWorkspaceController,
+  getAllWorkspacesController,
+  getWorkspaceByIdController
+} from "../controllers/workspace.controller.js";
+import channelRouter from "./channel.router.js";
 
-const workspaceRouter = Router()
+const workspaceRouter = Router();
 
-workspaceRouter.post('/', authMiddleware, createWorkspaceController)
+// Middleware de autenticación
+workspaceRouter.use(authMiddleware);
 
-// api/workspaces/invite/3123112dase3211
-workspaceRouter.post('/:workspace_id/invite/:invited_id', authMiddleware, invteUserToWorkspaceController)
+// Rutas existentes de workspaces
+workspaceRouter.get('/', getAllWorkspacesController);
+workspaceRouter.get('/:workspace_id', getWorkspaceByIdController);  // Nueva ruta
+workspaceRouter.post('/create-workspace', createWorkspaceController);  // Actualizada a 'create' sin /workspace_id
+workspaceRouter.post('/:workspace_id/invite/:invited_id', inviteUserToWorkspaceController);
 
-export default workspaceRouter
+// Rutas de canales (con middleware que inyecta workspace_id)
+workspaceRouter.use('/:workspace_id/channels', (req, res, next) => {
+    req.workspace_id = req.params.workspace_id;
+    next();
+}, channelRouter);
+
+export default workspaceRouter;
