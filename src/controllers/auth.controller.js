@@ -6,7 +6,6 @@ import { ENVIROMENT } from "../config/enviroment.config.js"
 import { sendMail } from "../utils/mailer.utils.js"
 import { AUTHORIZATION_TOKEN_PROPS } from "../utils/constants/token.constants.js"
 
-// Register new user
 export const registerController = async (req, res) => {
   try {
     const { username, email, password, profile_image_base64 } = req.body
@@ -56,7 +55,6 @@ export const registerController = async (req, res) => {
   }
 }
 
-// Verify email with token
 export const verifyEmailController = async (req, res) => {
   try {
     const { verification_token } = req.query
@@ -78,7 +76,6 @@ export const verifyEmailController = async (req, res) => {
   }
 }
 
-// User login
 export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body
@@ -112,7 +109,6 @@ export const loginController = async (req, res) => {
   }
 }
 
-// Request password reset
 export const resetPasswordController = async (req, res) => {
   try {
     const { email } = req.body
@@ -166,7 +162,6 @@ export const resetPasswordController = async (req, res) => {
   }
 }
 
-// Set new password with reset token
 export const rewritePasswordController = async (req, res) => {
   try {
     const { token, password } = req.body
@@ -215,7 +210,6 @@ export const rewritePasswordController = async (req, res) => {
   }
 }
 
-// Verify reset token validity
 export const verifyTokenController = async (req, res) => {
   try {
     const { token } = req.query

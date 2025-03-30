@@ -4,7 +4,6 @@ import channelRepository from "../repositories/channel.repository.js"
 import { AUTHORIZATION_TOKEN_PROPS } from "../utils/constants/token.constants.js"
 import Message from "../models/Message.model.js"
 
-
 // Create channel
 export const createChannelController = async (req, res) => {
   try {
@@ -12,9 +11,9 @@ export const createChannelController = async (req, res) => {
     const { workspace_id } = req.params
     const user_id = req.user[AUTHORIZATION_TOKEN_PROPS.ID]
 
-    if (!workspace_id) throw new ServerError("Workspace ID is required", 400)
-    if (!mongoose.Types.ObjectId.isValid(workspace_id)) throw new ServerError("Invalid workspace ID", 400)
-    if (!name?.trim()) throw new ServerError("Channel name is required", 400)
+    if (!workspace_id) throw new ServerError("Workspace ID es requerido", 400)
+    if (!mongoose.Types.ObjectId.isValid(workspace_id)) throw new ServerError("Workspace ID inválido", 400)
+    if (!name?.trim()) throw new ServerError("Nombre de canal requerido", 400)
 
     const channel = await channelRepository.createChannel({
       name: name.trim(),
@@ -24,7 +23,7 @@ export const createChannelController = async (req, res) => {
 
     res.status(201).json({
       ok: true,
-      message: "Channel created successfully",
+      message: "Canal creado exitosamente",
       data: channel,
     })
   } catch (error) {
@@ -43,7 +42,7 @@ export const getWorkspaceChannelsController = async (req, res) => {
     const { workspace_id } = req.params
     const user_id = req.user[AUTHORIZATION_TOKEN_PROPS.ID]
 
-    if (!workspace_id) throw new ServerError("Workspace ID is required", 400)
+    if (!workspace_id) throw new ServerError("Workspace ID es requerido", 400)
 
     const channels = await channelRepository.findChannelsByWorkspace({
       workspace_id,
@@ -70,11 +69,11 @@ export const getChannelByIdController = async (req, res) => {
     const { workspace_id, channel_id } = req.params
 
     if (!mongoose.Types.ObjectId.isValid(workspace_id)) {
-      throw new ServerError("Invalid workspace ID", 400)
+      throw new ServerError("Workspace ID inválido", 400)
     }
 
     if (!mongoose.Types.ObjectId.isValid(channel_id)) {
-      throw new ServerError("Invalid channel ID", 400)
+      throw new ServerError("Channel ID inválido", 400)
     }
 
     const user_id = req.user[AUTHORIZATION_TOKEN_PROPS.ID]
@@ -85,7 +84,7 @@ export const getChannelByIdController = async (req, res) => {
       user_id,
     })
 
-    if (!channel) throw new ServerError("Channel not found", 404)
+    if (!channel) throw new ServerError("Canal no encontrado", 404)
 
     res.status(200).json({
       ok: true,
@@ -108,7 +107,7 @@ export const sendMessageToChannelController = async (req, res) => {
     const { content } = req.body
 
     if (!content?.trim()) {
-      throw new ServerError("Message content is required", 400)
+      throw new ServerError("El contenido del mensaje es requerido", 400)
     }
 
     const newMessage = await Message.create({
