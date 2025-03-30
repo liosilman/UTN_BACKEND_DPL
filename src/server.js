@@ -1,12 +1,13 @@
-import { ENVIROMENT } from "./config/enviroment.config.js"
 import express from "express"
+import cors from "cors"
+import { ENVIROMENT } from "./config/enviroment.config.js"
+
 // Importamos mongoose después de la conexión
 import mongoose from "./config/mongodb.config.js"
-import cors from "cors"
 
 // Routers
-import userRouter from "./routes/user.routes.js"
 import authRouter from "./routes/auth.routes.js"
+import userRouter from "./routes/user.routes.js"
 import workspaceRouter from "./routes/workspaces.routes.js"
 import channelRouter from "./routes/channel.router.js"
 
@@ -16,6 +17,15 @@ const app = express()
 app.use(cors({ origin: true, credentials: true }))
 app.use(express.json({ limit: "5mb" }))
 app.use(express.urlencoded({ extended: true }))
+
+// Ruta de prueba para verificar que el servidor está funcionando
+app.get("/", (req, res) => {
+  res.json({
+    message: "API funcionando correctamente",
+    environment: process.env.NODE_ENV || "development",
+    mongodb_connected: mongoose.connection.readyState === 1,
+  })
+})
 
 // Routes
 app.use("/api/auth", authRouter)
@@ -43,17 +53,23 @@ app.use("/api/workspaces", workspaceRouter)
 
 // Error handler
 app.use((err, req, res, next) => {
+  console.error("Error no manejado:", err)
   res.status(500).json({
     ok: false,
     message: "Internal server error",
-    ...(process.env.NODE_ENV === "development" && {
+    ...(process.env.NODE_ENV !== "production" && {
       error: err.message,
+      stack: err.stack,
     }),
   })
 })
 
 // Start server
-app.listen(ENVIROMENT.PORT, () => {
-  console.log(`\n🚀 Server running on port ${ENVIROMENT.PORT}`)
+const PORT = ENVIROMENT.PORT || 3000
+app.listen(PORT, () => {
+  console.log(`
+🚀 Server running on port ${PORT}
+
+`)
 })
 
