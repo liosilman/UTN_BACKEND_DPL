@@ -4,6 +4,7 @@ import channelRepository from "../repositories/channel.repository.js"
 import { AUTHORIZATION_TOKEN_PROPS } from "../utils/constants/token.constants.js"
 import Message from "../models/Message.model.js"
 
+
 // Create channel
 export const createChannelController = async (req, res) => {
   try {
