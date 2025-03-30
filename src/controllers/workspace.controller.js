@@ -2,7 +2,7 @@ import workspaceRepository from "../repositories/workspace.repository.js";
 import mongoose from "mongoose";
 
 import { ServerError } from "../utils/errors.utils.js";
-import Workspace from "../Models/Workspaces.model.js";export const createWorkspaceController = async (req, res) => {
+import Workspace from "../models/Workspaces.model.js";export const createWorkspaceController = async (req, res) => {
     try {
         console.log('Request User:', req.user);
 

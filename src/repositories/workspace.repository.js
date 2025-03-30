@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Workspace from "../Models/Workspaces.model.js";
+import Workspace from "../models/Workspaces.model.js";
 import { ServerError } from "../utils/errors.utils.js";
 
 class WorkspaceRepository {
