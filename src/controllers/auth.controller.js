@@ -2,7 +2,7 @@ import { ServerError } from "../utils/errors.utils.js";
 import UserRepository from "../repositories/user.repository.js";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
-import {ENVIROMENT} from "../config/enviroment.config.js";
+import { ENVIROMENT } from "../config/enviroment.config.js";
 import { sendMail } from "../utils/mailer.utils.js";
 import { AUTHORIZATION_TOKEN_PROPS } from "../utils/constants/token.constants.js";
 
@@ -26,7 +26,13 @@ export const registerController = async (req, res) => {
             { expiresIn: '24h' }
         );  
 
-        await UserRepository.create({ username, email, password: passwordHash, verification_token, profile_image_base64 });
+        await UserRepository.create({ 
+            username, 
+            email, 
+            password: passwordHash, 
+            verification_token, 
+            profile_image_base64 
+        });
         
         await sendMail({
             to: email,
@@ -77,6 +83,11 @@ export const verifyEmailController = async (req, res) => {
 export const loginController = async (req, res) => {
     try {    
         const { email, password } = req.body;
+        
+        if (!email || !password) {
+            throw new ServerError("Email and password are required", 400);
+        }
+
         const user = await UserRepository.findUserByEmail(email);
         
         if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -108,52 +119,83 @@ export const resetPasswordController = async (req, res) => {
     try {
         const { email } = req.body;
         const user = await UserRepository.findUserByEmail(email);
-        if (!user || !user.verified) {
-            throw new ServerError("User not found or not verified", 400);
+        
+        if (!user) {
+            // No revelar que el email no existe por seguridad
+            return res.json({ ok: true, message: "Si el email existe, recibirás un enlace" });
         }
 
-        const reset_token = jwt.sign({ email, _id: user._id }, ENVIROMENT.SECRET_KEY_JWT, { expiresIn: '2h' });
+        const reset_token = jwt.sign(
+            { 
+                _id: user._id,
+                email: user.email,
+                action: 'password_reset' // Añadir propósito específico
+            }, 
+            ENVIROMENT.SECRET_KEY_JWT,
+            { expiresIn: '2h' }
+        );
+
         await sendMail({
-            to: email, 
-            subject: "Reset your password",
+            to: email,
+            subject: "Restablece tu contraseña",
             html: `
-            <h1>Has solicitado resetear tu contraseña</h1>
-            <a href='${ENVIROMENT.URL_FRONTEND}/rewrite-password?reset_token=${reset_token}'>Click aquí para resetear</a>`
+                <h1>Restablecimiento de contraseña</h1>
+                <p>Haz clic en el enlace para crear una nueva contraseña:</p>
+                <a href="${ENVIROMENT.URL_FRONTEND}/reset-password?token=${reset_token}">
+                    Restablecer contraseña
+                </a>
+                <p><small>Este enlace expirará en 2 horas. Si no solicitaste esto, ignora este email.</small></p>
+            `
         });
 
-        res.json({ ok: true, status: 200, message: 'Reset mail sent' });
+        res.json({ ok: true });
     } catch (error) {
-        return res.status(error.status || 500).send({
-            ok: false,
-            status: error.status || 500,
-            message: error.message || "Internal server error"
-        });
+        res.status(500).json({ ok: false, message: "Error processing request" });
     }
 };
-
 export const rewritePasswordController = async (req, res) => {
     try {
-        const { password, reset_token } = req.body;
-        const { _id } = jwt.verify(reset_token, ENVIROMENT.SECRET_KEY_JWT);
-        const user = await UserRepository.findUserById(_id);
-
-        if (!user) {
-            throw new ServerError('User not found', 404);
+        const { token, password } = req.body;
+        
+        const decoded = jwt.verify(token, ENVIROMENT.SECRET_KEY_JWT);
+        const user = await UserRepository.findUserById(decoded._id);
+        
+        if (!user || user.email !== decoded.email) {
+            throw new ServerError("Invalid user", 400);
         }
 
         const newHashedPassword = await bcrypt.hash(password, 10);
-        await UserRepository.changeUserPassword(_id, newHashedPassword);
-    
-        return res.json({
-            ok: true,
-            message: 'Password changed successfully',
-            status: 200
-        });
+        await UserRepository.changeUserPassword(decoded._id, newHashedPassword);
+        
+        res.json({ ok: true });
     } catch (error) {
-        return res.status(error.status || 500).send({
+        res.status(400).json({
             ok: false,
-            status: error.status || 500,
-            message: error.message || "Internal server error"
+            message: "No se pudo actualizar la contraseña. Solicita un nuevo enlace."
+        });
+    }
+};
+export const verifyTokenController = async (req, res) => {
+    try {
+        const { token } = req.query;
+        
+        const decoded = jwt.verify(token, ENVIROMENT.SECRET_KEY_JWT);
+        
+        // Validación adicional
+        if (decoded.action !== 'password_reset') {
+            throw new Error("Invalid token type");
+        }
+
+        const user = await UserRepository.findUserById(decoded._id);
+        if (!user || user.email !== decoded.email) {
+            throw new Error("User not found");
+        }
+
+        res.json({ ok: true, email: decoded.email });
+    } catch (error) {
+        res.status(400).json({ 
+            ok: false, 
+            message: "Enlace inválido o expirado" 
         });
     }
 };

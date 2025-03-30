@@ -57,7 +57,7 @@ class WorkspaceRepository {
     // ========== MÉTODOS PRIVADOS ========== //
     
     async _getWorkspaceById(workspace_id) {
-        const workspace = await Workspace.findById(workspace_id).lean();
+        const workspace = await Workspace.findById(workspace_id);
         if (!workspace) throw new ServerError("Workspace no encontrado", 404);
         return workspace;
     }
@@ -84,12 +84,15 @@ class WorkspaceRepository {
 
     async _addMember(workspace_id, owner_id, invited_id) {
         const workspace = await this._getWorkspaceById(workspace_id);
+        
         if (!workspace.owner.equals(owner_id)) {
             throw new ServerError("No tienes permisos para invitar miembros", 403);
         }
-        if (workspace.members.includes(invited_id)) {
+        
+        if (workspace.members.some(member => member.equals(invited_id))) {
             throw new ServerError("El usuario ya es miembro", 400);
         }
+        
         workspace.members.push(invited_id);
         await workspace.save();
         return workspace;
@@ -101,9 +104,11 @@ class WorkspaceRepository {
 
     async _removeMember(workspace_id, owner_id, member_id) {
         const workspace = await this._getWorkspaceById(workspace_id);
+        
         if (!workspace.owner.equals(owner_id)) {
             throw new ServerError("No tienes permisos para eliminar miembros", 403);
         }
+        
         workspace.members = workspace.members.filter(id => !id.equals(member_id));
         await workspace.save();
         return workspace;

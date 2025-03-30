@@ -1,5 +1,5 @@
 import express from "express";
-import { loginController, registerController, resetPasswordController, rewritePasswordController, verifyEmailController } from "../controllers/auth.controller.js";
+import { loginController, registerController, resetPasswordController, rewritePasswordController, verifyEmailController, verifyTokenController } from "../controllers/auth.controller.js";
 
 
 
@@ -9,5 +9,7 @@ authRouter.post("/register", registerController)
 authRouter.get('/verify-email', verifyEmailController)
 authRouter.post('/login', loginController)
 authRouter.post('/reset-password', resetPasswordController)
-authRouter.put('/rewrite-password', rewritePasswordController)
+authRouter.get('/verify-reset-token', verifyTokenController);
+authRouter.post('/rewrite-password', rewritePasswordController)
+
 export default authRouter
