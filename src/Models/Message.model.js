@@ -23,7 +23,7 @@ const messageSchema = new mongoose.Schema({
         default: Date.now,
         index: true  // Para ordenar por fecha eficientemente
     },
-    workspace_ref: {  // Campo adicional recomendado
+    workspace_ref: {  
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Workspace',
         required: true
