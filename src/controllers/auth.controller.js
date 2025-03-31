@@ -152,9 +152,6 @@ export const resetPasswordController = async (req, res) => {
       { expiresIn: "2h" },
     )
 
-    console.log(
-      `Enviando correo de restablecimiento a ${email} con URL: ${ENVIROMENT.URL_BACKEND}/reset-password?token=${reset_token}`,
-    )
     await sendMail({
       to: email,
       subject: "Restablece tu contraseña",
@@ -182,7 +179,8 @@ export const resetPasswordController = async (req, res) => {
  */
 export const rewritePasswordController = async (req, res) => {
   try {
-    const { token, password } = req.body
+    const { password } = req.body
+    const { token } = req.query // Obtener el token desde la URL
 
     if (!token || !password) {
       return res.status(400).json({
@@ -254,4 +252,3 @@ export const verifyTokenController = async (req, res) => {
     })
   }
 }
-
