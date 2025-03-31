@@ -14,7 +14,10 @@ import channelRouter from "./routes/channel.router.js"
 const app = express()
 
 // Basic configuration
-app.use(cors({ origin: true, credentials: true }))
+app.use(cors({
+  origin: 'https://utn-2025-fe-dpl.vercel.app',
+  credentials: true
+}))
 app.use(express.json({ limit: "5mb" }))
 app.use(express.urlencoded({ extended: true }))
 
