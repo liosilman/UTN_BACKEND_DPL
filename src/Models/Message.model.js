@@ -35,7 +35,7 @@ const messageSchema = new mongoose.Schema(
   },
 )
 
-// Índice compuesto para búsquedas frecuentes
+// Índice compuesto para búsquedas frecuentes de mensajes
 messageSchema.index({ channel_ref: 1, created_at: -1 })
 
 const Message = mongoose.model("Message", messageSchema)
