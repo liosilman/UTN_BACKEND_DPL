@@ -1,6 +1,6 @@
 import workspaceRepository from "../repositories/workspace.repository.js"
 import mongoose from "mongoose"
-import Workspace from "../models/Workspaces.model.js"
+import Workspace from "../models/workspaces.model.js" 
 
 export const createWorkspaceController = async (req, res) => {
   try {

@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
-import Channel from "../models/Channel.model.js"
-import Workspace from "../models/Workspaces.model.js"
+import Channel from "../models/channel.model.js"
+import Workspace from "../models/workspaces.model.js"
 import { ServerError } from "../utils/errors.utils.js"
 import workspaceRepository from "./workspace.repository.js"
 

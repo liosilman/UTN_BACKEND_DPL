@@ -1,4 +1,5 @@
-import User from "../models/User.model.js"
+// Update the import to use lowercase filename
+import User from "../models/user.model.js" // Changed from User.model.js
 import { ServerError } from "../utils/errors.utils.js"
 
 export const getCurrentUserController = async (req, res) => {

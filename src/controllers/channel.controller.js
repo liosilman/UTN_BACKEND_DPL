@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 import { ServerError } from "../utils/errors.utils.js"
 import channelRepository from "../repositories/channel.repository.js"
 import { AUTHORIZATION_TOKEN_PROPS } from "../utils/constants/token.constants.js"
-import Message from "../models/Message.model.js"
+import Message from "../models/message.model.js"
 
 // Create channel
 export const createChannelController = async (req, res) => {

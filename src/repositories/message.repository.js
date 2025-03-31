@@ -1,4 +1,4 @@
-import Message from "../models/Message.model.js"
+import Message from "../models/message.model.js" // Changed from Message.model.js
 import { ServerError } from "../utils/errors.utils.js"
 import channelRepository from "./channel.repository.js"
 
