@@ -18,14 +18,6 @@ app.use(cors({ origin: true, credentials: true }))
 app.use(express.json({ limit: "5mb" }))
 app.use(express.urlencoded({ extended: true }))
 
-// Ruta de prueba para verificar que el servidor está funcionando
-app.get("/", (req, res) => {
-  res.json({
-    message: "API funcionando correctamente",
-    environment: process.env.NODE_ENV || "development",
-    mongodb_connected: mongoose.connection.readyState === 1,
-  })
-})
 
 // Routes
 app.use("/api/auth", authRouter)
