@@ -1,4 +1,4 @@
-import User from "../models/User.model.js"
+import User from "../models/User.model.js";
 import { ServerError } from "../utils/errors.utils.js"
 
 export const getCurrentUserController = async (req, res) => {
