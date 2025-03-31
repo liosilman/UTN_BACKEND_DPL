@@ -153,7 +153,7 @@ export const resetPasswordController = async (req, res) => {
     )
 
     console.log(
-      `Enviando correo de restablecimiento a ${email} con URL: https://utn-2025-fe-dpl.vercel.app/reset-password?token=${reset_token}`,
+      `Enviando correo de restablecimiento a ${email} con URL: ${ENVIROMENT.URL_BACKEND}/reset-password?token=${reset_token}`,
     )
     await sendMail({
       to: email,
@@ -161,7 +161,7 @@ export const resetPasswordController = async (req, res) => {
       html: `
                 <h1>Restablecimiento de contraseña</h1>
                 <p>Haz clic en el enlace para crear una nueva contraseña:</p>
-                <a href="https://utn-2025-fe-dpl.vercel.app/reset-password?token=${reset_token}">
+                <a href=${ENVIROMENT.URL_FRONTEND}/reset-password?token=${reset_token}">
                     Restablecer contraseña
                 </a>
                 <p><small>Este enlace expirará en 2 horas. Si no solicitaste esto, ignora este email.</small></p>
