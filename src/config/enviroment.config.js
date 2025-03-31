@@ -8,7 +8,7 @@ export const ENVIROMENT = {
   SECRET_KEY_JWT: process.env.SECRET_KEY_JWT,
   GMAIL_USERNAME: process.env.GMAIL_USERNAME,
   GMAIL_PASSWORD: process.env.GMAIL_PASSWORD,
-  URL_BACKEND: process.env.URL_BACKEND || "https://utn-backend-dpl.vercel.app/",
+  URL_BACKEND: process.env.URL_BACKEND || "https://utn-backend-dpl.onrender.com",
   URL_FRONTEND: process.env.URL_FRONTEND ||"https://utn-2025-fe-dpl.vercel.app/",
   MYSQL:{
     HOST: process.env.MYSQL_HOST,
