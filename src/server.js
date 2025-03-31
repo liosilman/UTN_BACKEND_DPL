@@ -15,7 +15,7 @@ const app = express()
 
 // Basic configuration
 app.use(cors({
-  origin: ENVIROMENT.URL_FRONTEND,
+  origin: "https://utn-2025-fe-dpl.vercel.app" || "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }))
