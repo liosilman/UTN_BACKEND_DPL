@@ -11,7 +11,7 @@ const connectToMongoDB = async () => {
     return response
   } catch (error) {
     console.error("❌ Error al conectar a MongoDB:", error.message)
-    // No lanzamos el error para permitir que el servidor inicie aunque falle la conexión
+
   }
 }
 
