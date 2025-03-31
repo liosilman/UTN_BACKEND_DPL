@@ -10,12 +10,6 @@ export const ENVIROMENT = {
   GMAIL_PASSWORD: process.env.GMAIL_PASSWORD,
   URL_BACKEND: process.env.URL_BACKEND || "https//localhost:3000",
   URL_FRONTEND: process.env.URL_FRONTEND || "https://utn-2025-fe-dpl.vercel.app",
-  MYSQL: {
-    HOST: process.env.MYSQL_HOST,
-    USER: process.env.MYSQL_USER,
-    PASSWORD: process.env.MYSQL_PASSWORD,
-    DB_NAME: process.env.MYSQL_DB_NAME,
-  },
 }
 
 for (const key in ENVIROMENT) {
