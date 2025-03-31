@@ -5,11 +5,7 @@
         "src": "src/server.js",
         "use": "@vercel/node",
         "config": {
-          "includeFiles": [
-            "src/models/*.model.js",
-            "src/controllers/*.js",
-            "src/config/*.js"
-          ],
+          "includeFiles": ["src/**/*.js"],
           "maxLambdaSize": "50mb",
           "nodeVersion": "18.x"
         }
@@ -22,3 +18,5 @@
       }
     ]
   }
+  
+  
