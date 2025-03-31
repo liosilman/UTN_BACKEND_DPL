@@ -1,0 +1,134 @@
+import mongoose from "mongoose"
+
+const workspace_schema = new mongoose.Schema({
+    name: { type: String, required: true },
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    channels: [{ type: mongoose.Schema.Types.ObjectId, ref: "Channel" }],
+    created_at: { type: Date, default: Date.now },
+})
+
+const Workspace = mongoose.model("Workspace", workspace_schema)
+
+export default Workspace
+
+////////////////////////////////
+
+import mongoose from "mongoose"
+
+const messageSchema = new mongoose.Schema(
+    {
+        channel_ref: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Channel",
+            required: true,
+            index: true,
+        },
+        sender: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        content: {
+            type: String,
+            required: true,
+            trim: true,
+            maxlength: 2000,
+        },
+        created_at: {
+            type: Date,
+            default: Date.now,
+            index: true,
+        },
+        workspace_ref: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Workspace",
+            required: true,
+        },
+    },
+    {
+        timestamps: true,
+    },
+)
+
+// Índice compuesto para búsquedas frecuentes de mensajes
+messageSchema.index({ channel_ref: 1, created_at: -1 })
+
+const Message = mongoose.model("Message", messageSchema)
+export default Message
+
+///////////////////////////
+
+import mongoose from "mongoose"
+
+export const USER_PROPS = {
+    EMAIL: "email",
+    PASSWORD: "password",
+    USERNAME: "username",
+    VERIFIED: "verified",
+    VERIFICATION_TOKEN: "verification_token",
+    CREATED_AT: "created_at",
+    MODIFIED_AT: "modified_at",
+    ACTIVE: "active",
+}
+
+const userSchema = new mongoose.Schema({
+    [USER_PROPS.EMAIL]: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    [USER_PROPS.PASSWORD]: {
+        type: String,
+        required: true,
+    },
+    [USER_PROPS.USERNAME]: {
+        type: String,
+        unique: true,
+        required: true,
+    },
+    [USER_PROPS.VERIFIED]: {
+        type: Boolean,
+        default: false,
+    },
+    [USER_PROPS.VERIFICATION_TOKEN]: {
+        type: String,
+    },
+    [USER_PROPS.CREATED_AT]: {
+        type: Date,
+        default: Date.now,
+    },
+    [USER_PROPS.MODIFIED_AT]: {
+        type: Date,
+    },
+    [USER_PROPS.ACTIVE]: {
+        type: Boolean,
+        default: true,
+    },
+    profile_image_base64: {
+        type: String,
+        default: null,
+    },
+})
+
+const User = mongoose.model("User", userSchema)
+
+export default User
+
+////////////////////////
+
+
+import mongoose from "mongoose"
+
+const workspace_schema = new mongoose.Schema({
+    name: { type: String, required: true },
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    channels: [{ type: mongoose.Schema.Types.ObjectId, ref: "Channel" }],
+    created_at: { type: Date, default: Date.now },
+})
+
+const Workspace = mongoose.model("Workspace", workspace_schema)
+
+export default Workspace
+
