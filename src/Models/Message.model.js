@@ -6,7 +6,7 @@ const messageSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Channel",
       required: true,
-      index: true, // Mejorar performance en búsquedas
+      index: true, 
     },
     sender: {
       type: mongoose.Schema.Types.ObjectId,
@@ -22,7 +22,7 @@ const messageSchema = new mongoose.Schema(
     created_at: {
       type: Date,
       default: Date.now,
-      index: true, // Para ordenar por fecha eficientemente
+      index: true, 
     },
     workspace_ref: {
       type: mongoose.Schema.Types.ObjectId,
@@ -31,7 +31,7 @@ const messageSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Añade createdAt y updatedAt automáticamente
+    timestamps: true,
   },
 )
 

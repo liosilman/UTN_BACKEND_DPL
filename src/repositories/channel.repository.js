@@ -5,11 +5,9 @@ import { ServerError } from "../utils/errors.utils.js"
 import workspaceRepository from "./workspace.repository.js"
 
 class ChannelRepository {
-  // ========== MÉTODOS PÚBLICOS ========== //
-
+  // Busca un canal dentro de un workspace
   async findChannelById({ workspace_id, channel_id, user_id }) {
     console.log("Buscando canal con estos parámetros:", { workspace_id, channel_id, user_id })
-
     this._validateIds(workspace_id, channel_id) // Validación de IDs
 
     const channel = await Channel.findOne({
@@ -24,6 +22,7 @@ class ChannelRepository {
     return channel
   }
 
+  // Crea un nuevo canal dentro de un workspace
   async createChannel({ name, workspace_id, user_id }) {
     this._validateChannelData(name, workspace_id)
     await this._verifyWorkspaceAccess(workspace_id, user_id)
@@ -36,36 +35,31 @@ class ChannelRepository {
       created_by: user_id,
     })
 
-    // Actualizar el workspace para añadir el canal al array channels
+    // Agregar el canal al workspace
     try {
       await Workspace.findByIdAndUpdate(workspace_id, { $push: { channels: newChannel._id } })
     } catch (error) {
       console.log("Error al actualizar el workspace con el nuevo canal:", error.message)
-      // No lanzamos error para no interrumpir el flujo
     }
 
     return this._getFormattedChannel(newChannel._id)
   }
 
+  // Obtiene todos los canales de un workspace
   async findChannelsByWorkspace({ workspace_id, user_id }) {
     this._validateWorkspaceId(workspace_id)
     await this._verifyWorkspaceAccess(workspace_id, user_id)
     return this._getWorkspaceChannels(workspace_id)
   }
 
+  // Obtiene un canal específico dentro de un workspace
   async findChannelInWorkspace({ workspace_id, channel_id, user_id }) {
     this._validateIds(workspace_id, channel_id)
     await this._verifyWorkspaceAccess(workspace_id, user_id)
     return this._getWorkspaceChannel(workspace_id, channel_id)
   }
 
-  // ========== MÉTODOS PRIVADOS ========== //
-
-  async _getChannelById(channel_id) {
-    const channel = await Channel.findById(channel_id).lean()
-    if (!channel) throw new ServerError("Canal no encontrado", 404)
-    return channel
-  }
+  // ===== Métodos privados =====
 
   async _getFormattedChannel(channel_id) {
     return Channel.findById(channel_id)
@@ -133,15 +127,7 @@ class ChannelRepository {
     })
     if (existing) throw new ServerError("Canal ya existe", 409)
   }
-
-  _populateChannelData(channel) {
-    return Channel.populate(channel, [
-      { path: "workspace_ref", select: "name" },
-      { path: "created_by", select: "username avatar" },
-    ])
-  }
 }
 
 const channelRepository = new ChannelRepository()
 export default channelRepository
-

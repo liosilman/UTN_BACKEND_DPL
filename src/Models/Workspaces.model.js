@@ -4,7 +4,7 @@ const workspace_schema = new mongoose.Schema({
   name: { type: String, required: true },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  channels: [{ type: mongoose.Schema.Types.ObjectId, ref: "Channel" }], // Campo añadido
+  channels: [{ type: mongoose.Schema.Types.ObjectId, ref: "Channel" }],
   created_at: { type: Date, default: Date.now },
 })
 
