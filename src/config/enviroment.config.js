@@ -8,7 +8,7 @@ export const ENVIROMENT = {
   SECRET_KEY_JWT: process.env.SECRET_KEY_JWT,
   GMAIL_USERNAME: process.env.GMAIL_USERNAME,
   GMAIL_PASSWORD: process.env.GMAIL_PASSWORD,
-  URL_BACKEND: process.env.URL_BACKEND || "https//localhost:3000",
+  URL_BACKEND: process.env.URL_BACKEND || "https://utn-backend-dpl.onrender.com" || "https://localhost:3000",
   URL_FRONTEND: process.env.URL_FRONTEND || "https://utn-2025-fe-dpl.vercel.app",
 }
 
