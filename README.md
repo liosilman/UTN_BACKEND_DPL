@@ -36,35 +36,35 @@ En general fue muy de la mano con lo aprendido en las clases, tuve problemas con
 - **cors**: Para habilitar el intercambio de recursos entre diferentes orígenes.
 
 ## Estructura del Proyecto
-📦src
- ┣ 📂config
- ┃ ┣ 📜enviroment.config.js
- ┃ ┗ 📜mongodb.config.js
- ┣ 📂controllers
- ┃ ┣ 📜auth.controller.js
- ┃ ┣ 📜channel.controller.js
- ┃ ┣ 📜user.controller.js
- ┃ ┗ 📜workspace.controller.js
- ┣ 📂middlewares
- ┃ ┗ 📜authMiddleware.js
- ┣ 📂models
- ┃ ┣ 📜channel.model.js
- ┃ ┣ 📜message.model.js
- ┃ ┣ 📜user.model.js
- ┃ ┗ 📜workspaces.model.js
- ┣ 📂repositories
- ┃ ┣ 📜channel.repository.js
- ┃ ┣ 📜message.repository.js
- ┃ ┣ 📜user.repository.js
- ┃ ┗ 📜workspace.repository.js
- ┣ 📂routes
- ┃ ┣ 📜auth.routes.js
- ┃ ┣ 📜channel.router.js
- ┃ ┣ 📜user.routes.js
- ┃ ┗ 📜workspaces.routes.js
- ┣ 📂utils
- ┃ ┣ 📂constants
- ┃ ┃ ┗ 📜token.constants.js
- ┃ ┣ 📜errors.utils.js
- ┃ ┗ 📜mailer.utils.js
- ┗ 📜server.js
+src
+ ┣ config
+ ┃ ┣ enviroment.config.js
+ ┃ ┗ mongodb.config.js
+ ┣ controllers
+ ┃ ┣ auth.controller.js
+ ┃ ┣ channel.controller.js
+ ┃ ┣ user.controller.js
+ ┃ ┗ workspace.controller.js
+ ┣ middlewares
+ ┃ ┗ authMiddleware.js
+ ┣ models
+ ┃ ┣ channel.model.js
+ ┃ ┣ message.model.js
+ ┃ ┣ user.model.js
+ ┃ ┗ workspaces.model.js
+ ┣ repositories
+ ┃ ┣ channel.repository.js
+ ┃ ┣ message.repository.js
+ ┃ ┣ user.repository.js
+ ┃ ┗ workspace.repository.js
+ ┣ routes
+ ┃ ┣ auth.routes.js
+ ┃ ┣ channel.router.js
+ ┃ ┣ user.routes.js
+ ┃ ┗ workspaces.routes.js
+ ┣ utils
+ ┃ ┣ constants
+ ┃ ┃ ┗ token.constants.js
+ ┃ ┣ errors.utils.js
+ ┃ ┗ mailer.utils.js
+ ┗ server.js
