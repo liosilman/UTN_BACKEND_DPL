@@ -6,6 +6,10 @@ Este proyecto es una API RESTful desarrollada con Node.js y Express que proporci
 
 El sistema incluye autenticación completa con JWT, verificación de correo electrónico, recuperación de contraseña y gestión de usuarios, workspaces y canales.
 
+## Dificultades y aprendizajes
+
+En general fue muy de la mano con lo aprendido en las clases, tuve problemas con el despliegue en vercel y termine haciendolo en Render, siento que fue un buen desafio y que puso a prueba todo lo que vimos a lo largo de la cursada, me falto tiempo para implementar algunas funciones que ya habia planteado pero por temas laborales no pude terminar de aplicar, igualmente lo voy a hacer con tiempo para dejar mas completo el proyecto, pero en normas generales estuvo muy bueno y ahora que tuve el tiempo de ponerme a programar bastante me gusto bastante el poder plantear las cosas y poder hacerlas, asi que toca seguir estudiando, aprendiendo y programando.
+
 ## Características Principales
 
 - **Autenticación de usuarios**: Registro, inicio de sesión, verificación de correo electrónico y recuperación de contraseña.
