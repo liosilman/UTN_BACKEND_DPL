@@ -152,13 +152,16 @@ export const resetPasswordController = async (req, res) => {
       { expiresIn: "2h" },
     )
 
+    console.log(
+      `Enviando correo de restablecimiento a ${email} con URL: ${ENVIROMENT.URL_FRONTEND}/reset-password?token=${reset_token}`,
+    )
     await sendMail({
       to: email,
       subject: "Restablece tu contraseña",
       html: `
                 <h1>Restablecimiento de contraseña</h1>
                 <p>Haz clic en el enlace para crear una nueva contraseña:</p>
-                <a href=https://utn-2025-fe-dpl.vercel.app/reset-password?token=${reset_token}">
+                <a href="${ENVIROMENT.URL_FRONTEND}/reset-password?token=${reset_token}">
                     Restablecer contraseña
                 </a>
                 <p><small>Este enlace expirará en 2 horas. Si no solicitaste esto, ignora este email.</small></p>
@@ -179,13 +182,25 @@ export const resetPasswordController = async (req, res) => {
  */
 export const rewritePasswordController = async (req, res) => {
   try {
+    // Log para depuración
+    console.log("Datos recibidos en rewritePasswordController:", {
+      body: req.body,
+      query: req.query,
+    })
+
+    // Intentar obtener el token y la contraseña de diferentes fuentes
+    const token = req.body.token || req.body.reset_token
     const { password } = req.body
-    const { token } = req.query // Obtener el token desde la URL
 
     if (!token || !password) {
       return res.status(400).json({
         ok: false,
         message: "Token y contraseña son requeridos",
+        received: {
+          hasToken: !!token,
+          hasPassword: !!password,
+          bodyKeys: Object.keys(req.body),
+        },
       })
     }
 
@@ -213,15 +228,19 @@ export const rewritePasswordController = async (req, res) => {
 
       res.json({ ok: true, message: "Contraseña actualizada correctamente" })
     } catch (jwtError) {
+      console.error("Error al verificar JWT:", jwtError)
       res.status(400).json({
         ok: false,
         message: "Token inválido o expirado",
+        error: jwtError.message,
       })
     }
   } catch (error) {
+    console.error("Error general en rewritePasswordController:", error)
     res.status(500).json({
       ok: false,
       message: "Error al procesar la solicitud",
+      error: error.message,
     })
   }
 }
@@ -252,3 +271,4 @@ export const verifyTokenController = async (req, res) => {
     })
   }
 }
+
